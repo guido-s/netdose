@@ -412,32 +412,52 @@ netdose <- function(TE, seTE, agent1, dose1, agent2, dose2, studlab,
       )
     }
     #
-    seTE <- TE$seTE
+    if (is.null(attr(TE, "varnames")))
+      seTE <- TE$seTE
+    else
+      seTE <- TE[[attr(TE, "varnames")[2]]]
+    #
     studlab <- TE$studlab
     #
-    if (!is.null(TE$n1)) {
+    if (!is.null(TE$n1))
       n1 <- TE$n1
-    }
-    if (!is.null(TE$n2)) {
+    #
+    if (!is.null(TE$n2))
       n2 <- TE$n2
-    }
-    if (!is.null(TE$event1)) {
+    #
+    if (!is.null(TE$event1))
       event1 <- TE$event1
-    }
-    if (!is.null(TE$event2)) {
+    #
+    if (!is.null(TE$event2))
       event2 <- TE$event2
-    }
     #
     pairdata <- TE
     data <- TE
     #
-    agent1 <- catch("agent1", mc, data, sfsp)
-    dose1 <- catch("dose1", mc, data, sfsp)
+    if (!is.null(TE$agent1))
+      agent1 <- TE$agent1
+    else
+      agent1 <- catch("agent1", mc, data, sfsp)
     #
-    agent2 <- catch("agent2", mc, data, sfsp)
-    dose2 <- catch("dose2", mc, data, sfsp)
+    if (!is.null(TE$agent2))
+      agent2 <- TE$agent2
+    else
+      agent2 <- catch("agent2", mc, data, sfsp)
     #
-    TE <- TE$TE
+    if (!is.null(TE$dose1))
+      dose1 <- TE$dose1
+    else
+      dose1 <- catch("dose1", mc, data, sfsp)
+    #
+    if (!is.null(TE$dose2))
+      dose2 <- TE$dose2
+    else
+      dose2 <- catch("dose2", mc, data, sfsp)
+    #
+    if (is.null(attr(TE, "varnames")))
+      TE <- TE$TE
+    else
+      TE <- TE[[attr(TE, "varnames")[1]]]
   }
   else {
     is.pairwise <- FALSE
@@ -666,7 +686,13 @@ netdose <- function(TE, seTE, agent1, dose1, agent2, dose2, studlab,
     names(common.dose) <- setchar(names(common.dose), agents)
   }
   else {
-    by_dose <- by(c(dose1, dose2), c(agent1, agent2), median, na.rm = TRUE)
+    ev.rep <- rep(1, length(studlab))
+    n.rep <- rep(100, length(studlab))
+    ldat <- longarm(event1 = ev.rep, event2 = ev.rep,
+                    n1 = n.rep, n2 = n.rep,
+                    studlab = studlab, dose1 = dose1, dose2 = dose2,
+                    agent1 = agent1, agent2 = agent2)
+    by_dose <- by(ldat$dose, ldat$agent, median, na.rm = TRUE)
     #
     common.dose <- as.vector(by_dose)
     names(common.dose) <- names(by_dose)

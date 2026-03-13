@@ -4,6 +4,18 @@
 
 * change preferred citation of R package **netdose**
 
+### User-visible changes
+
+* netdose():
+  - accepts a pairwise() object as the only input
+
+### Bug fixes
+
+* netdose():
+  - multi-arm studies were included multiple times in the calculation of median
+    doses (argument 'common.dose')
+  - input to argument 'varnames' in pairwise() was ignored
+
 
 ## netdose, version 0.7-4 (2026-01-15)
 

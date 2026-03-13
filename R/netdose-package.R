@@ -40,7 +40,7 @@
 #'
 #' @keywords package
 #'
-#' @importFrom meta ci gs
+#' @importFrom meta ci gs longarm
 #' @importFrom netmeta netmeta netconnection invmat
 #' @importFrom Hmisc rcspline.eval
 #' @importFrom MASS ginv
